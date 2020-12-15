@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@model IEnumerable<DiflexmoShoppingCart.DTO.ShoppingCartOutputDTO>
+
+@{
+    ViewData["Title"] = "Shopping Carts";
+}
+
+@{
+    int currentShoppingCartId = Context.Session.GetString("CurrentShoppingCart") != null ?  int.Parse(Context.Session.GetString("CurrentShoppingCart")) : 0;
+}
+
+<h1>Shopping Carts</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+    <form asp-action="Index" method="get">
+        <input type="text" id="filter" name="filter" />
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Alias)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmountOfItems)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            bool IsShoppingCart = item.Id == currentShoppingCartId;
+            string background = IsShoppingCart ? "bg-light" : "";
+
+            <tr class="@(background)">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Alias)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountOfItems)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                    @Html.ActionLink("Set As Current Shopping Cart", "SetCurrent", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

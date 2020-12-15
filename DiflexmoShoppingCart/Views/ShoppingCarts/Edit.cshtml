@@ -1,0 +1,95 @@
+﻿@model DiflexmoShoppingCart.DTO.ShoppingCartInputDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Shopping Cart</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-route-id="@(Model.Id)" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Alias" class="control-label"></label>
+                <input asp-for="Alias" class="form-control" />
+                <span asp-validation-for="Alias" class="text-danger"></span>
+            </div>
+
+            <h4 class="mt-4">Products</h4>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Product Name
+                        </th>
+                        <th>
+                            Price
+                        </th>
+                        <th>
+                            Amount
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="form-group">
+                    @for(int i = 0; i < Model.ProductShoppingCarts.Count; i++)
+                    {
+                        
+                    <tr>
+                        <td>
+                            <input asp-for="(@Model.ProductShoppingCarts[i].Id)" style="display:none" />
+                            @Model.ProductShoppingCarts[i].Product.Name
+                        </td>
+                        <td id="price@(Model.ProductShoppingCarts[i].Id)">
+                            @(Model.ProductShoppingCarts[i].Product.Price * Model.ProductShoppingCarts[i].Amount)
+                        </td>
+                        <td>
+                            <input id="@Model.ProductShoppingCarts[i].Id" onchange="changePrice(@(Model.ProductShoppingCarts[i].Id), @(Model.ProductShoppingCarts[i].Product.Price))" asp-for="@Model.ProductShoppingCarts[i].Amount" class="form-control" />
+                            <span asp-validation-for="@Model.ProductShoppingCarts[i].Amount" class="text-danger"></span>
+                        </td>
+                        <td><button type="button" onclick="remove(@(Model.ProductShoppingCarts[i].Id))" class="btn-danger">Remove</button> </td>
+                    </tr>
+                    }
+
+
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back To Shopping Carts</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        remove = (id) => {
+            document.getElementById(id).value = 0;
+            document.getElementById("price" + id).textContent = 0;
+        };
+
+        changePrice = (id, price) => {
+            document.getElementById("price" + id).textContent = document.getElementById(id).value * price;
+
+            if (document.getElementById(id).value < 0) {
+                document.getElementById(id).value = 0;
+                document.getElementById("price" + id).textContent = 0;
+            }
+        };
+    </script>
+
+}
+
+
+
+
